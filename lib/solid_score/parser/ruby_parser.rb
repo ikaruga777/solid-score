@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "parser/current"
+require "prism"
 
 module SolidScore
   module Parser
@@ -36,7 +36,7 @@ module SolidScore
 
       def parse_file(file_path)
         source = File.read(file_path)
-        ast = ::Parser::CurrentRuby.parse(source)
+        ast = ::Prism::Translation::Parser.parse(source)
         return [] unless ast
 
         extract_definitions(ast, file_path)
