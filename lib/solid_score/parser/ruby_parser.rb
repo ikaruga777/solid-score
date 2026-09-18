@@ -4,6 +4,10 @@ require "prism"
 
 module SolidScore
   module Parser
+    # Raised when a source file cannot be parsed. Wraps the underlying
+    # parser error so callers do not depend on the parsing library.
+    class SyntaxError < StandardError; end
+
     # Parses Ruby source files and extracts class/method information.
     #
     # Phase 1 改善:
@@ -40,6 +44,8 @@ module SolidScore
         return [] unless ast
 
         extract_definitions(ast, file_path)
+      rescue ::Parser::SyntaxError => e
+        raise SyntaxError, "#{file_path}: #{e.message}"
       end
 
       private

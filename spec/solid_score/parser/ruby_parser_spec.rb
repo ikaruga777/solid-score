@@ -264,5 +264,10 @@ RSpec.describe SolidScore::Parser::RubyParser do
         expect(ivar_calls).not_to be_empty
       end
     end
+
+    it "raises SolidScore::Parser::SyntaxError for unparsable source" do
+      expect { described_class.new.parse_file("#{fixtures_path}/syntax_error.rb") }
+        .to raise_error(SolidScore::Parser::SyntaxError, /syntax_error\.rb/)
+    end
   end
 end
