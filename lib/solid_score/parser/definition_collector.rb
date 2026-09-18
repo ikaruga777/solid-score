@@ -39,11 +39,17 @@ module SolidScore
       def collect_nested(body, namespace)
         return unless body
 
+        with_namespace(namespace) do
+          body.body
+              .select { |child| child.is_a?(::Prism::ClassNode) || child.is_a?(::Prism::ModuleNode) }
+              .each { |child| visit(child) }
+        end
+      end
+
+      def with_namespace(namespace)
         previous = @namespace
         @namespace = namespace
-        body.body
-            .select { |child| child.is_a?(::Prism::ClassNode) || child.is_a?(::Prism::ModuleNode) }
-            .each { |child| visit(child) }
+        yield
       ensure
         @namespace = previous
       end

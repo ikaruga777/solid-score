@@ -22,6 +22,12 @@ RSpec.describe SolidScore::Parser::DefinitionCollector do
       .to eq(%w[Payments Payments::Processor Payments::Processor::Error Payments::Util])
   end
 
+  it "keeps the namespace after an empty-bodied sibling definition" do
+    source = "module Outer\n  class Empty < StandardError; end\n  class Sibling\n    def run; end\n  end\nend"
+
+    expect(collect(source).map(&:name)).to eq(%w[Outer Outer::Empty Outer::Sibling])
+  end
+
   it "finds top-level definitions inside guard expressions" do
     expect(collect("if defined?(Rails)\n  class Guarded; end\nend").map(&:name)).to eq(%w[Guarded])
   end
